@@ -1,0 +1,14 @@
+#!/bin/sh -e
+
+echo "imap: /etc/guardiankey/dovecot.deny" >> /etc/hosts.deny
+echo "imaps: /etc/guardiankey/dovecot.deny" >> /etc/hosts.deny
+echo "pop3: /etc/guardiankey/dovecot.deny" >> /etc/hosts.deny
+echo "pop3s: /etc/guardiankey/dovecot.deny" >> /etc/hosts.deny
+echo "
+
+[DOVECOT]
+
+dovecot_log = " >> /etc/guardiankey/gk.conf
+
+pip install datefinder
+
