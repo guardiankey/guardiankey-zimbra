@@ -5,7 +5,7 @@ import json
 import configparser
 import datetime
 import tail
-
+import time
 
 configp = configparser.ConfigParser()
 configp.read('/etc/guardiankey/gk.conf')
@@ -17,12 +17,14 @@ def callback_f(line):
 
 def doAction(ip):
     now = datetime.datetime.now()
-    blockdate = str(time.time())
+    blockdate = str(int(time.time()))
     ipline = str(ip)+'#'+blockdate+'\n'
-    f = open('/etc/guardiankey/zimbra.deny','a')
+    f = open('/etc/guardiankey/gk.deny','a')
     f.write(ipline)
     f.close()
-
+    cmd = "iptables -I INPUT -s {} -j DROP".format(ip)
+    subprocess.check_output(cmd, shell=True)
+    
 def send(line):
     global GKconfig
     jlog = gkparser_zimbralog.parselog(line)
@@ -35,7 +37,7 @@ def send(line):
 			result = guardiankey.checkaccess(jlog['user'],jlog['ip'],jlog['time'],loginfailed,'Authentication')
 			if result['response'] == 'BLOCK' and GKconfig['block'] == '1':
 				f = open('/var/log/guardiankey.log','a')
-				f.write(str(json_dumps(result)))
+				f.write(str(json.dumps(result)))
 				f.close()
 				doAction(jlog['ip'])
     return None
